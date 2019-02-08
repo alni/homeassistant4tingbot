@@ -6,10 +6,9 @@ import json
     
 # setup code here
 
-# Please: Create a copy of "user_prefs.example.json" with the name of
-# "user_prefs.json" with user preferences
-with open('user_prefs.json') as f:
-    user_prefs = json.load(f)
+# Please: Create a copy of "default_settings.json" with the name of
+# "settings.json" (or "local_settings.json") containing user preferences
+user_prefs = tingbot.app.settings
     
 # Important: Create a copy of "secrets.example.json" with the name of
 # "secrets.json" and provide a valid access token within that file
@@ -88,12 +87,28 @@ def increment_climate_temp(increment):
     
 
 @right_button.press
-def inc_climate_temp():
-    increment_climate_temp(+temp_increment_by)
+@touch(xy=(300, 20), size=(64,64), align="topright")
+def inc_climate_temp(xy=None, action=None):
+    if action == None or action == "up":
+        increment_climate_temp(+temp_increment_by)
 
 @midright_button.press
-def dec_climate_temp():
-    increment_climate_temp(-temp_increment_by)
+@touch(xy=(230, 20), size=(64,64), align="topright")
+def dec_climate_temp(xy=None, action=None):
+    if action == None or action == "up":
+        increment_climate_temp(-temp_increment_by)
+
+@left_button.hold
+def climate_turn_off():
+    data = {'entity_id':climate_entity_id}
+    post_service_action('climate', 'turn_off', data)
+    get_climate_states(climate_entity_id)
+
+@left_button.press
+def climate_turn_on():
+    data = {'entity_id':climate_entity_id}
+    post_service_action('climate', 'turn_on', data)
+    get_climate_states(climate_entity_id)
     
     
 get_climate_states(climate_entity_id)
@@ -110,16 +125,21 @@ if climate_operation_mode == 'heat':
 def loop():
     get_climate_states(climate_entity_id)
     
-
-
-@every(seconds=5)
+@every(seconds=1)
 def loop2():
     # drawing code here
     screen.fill(color='black')
     # screen.text('Hello world!')
+
+    # "plus-box-outline"
+    screen.text(u"\uF703", xy=(300, 20), align="topright", font_size=64, font='materialdesignicons-webfont.ttf')
+    # "minus-box-outline"
+    screen.text(u"\uF6F1", xy=(230, 20), align="topright", font_size=64, font='materialdesignicons-webfont.ttf')
+
+    
     screen.text(str(temp) + ' (' + str(climate_temp) + ' ; ' + climate_state + ')')
     color = 'gray'
-    if climate_state == 'idle':
+    if climate_state == 'idle' or climate_state == 'off':
         color = color_idle
     else:
         color = color_active
