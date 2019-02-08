@@ -1,0 +1,5 @@
+{
+    "server_address": "http://192.168.0.60:8123",
+    "climate_entity_id": "climate.living_room",
+    "climate_temp_increment_by": 0.5
+}

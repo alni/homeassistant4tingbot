@@ -102,3 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+homeassistant4tingbot\.tingapp/secrets\.json
+
+homeassistant4tingbot\.tingapp/user_prefs\.json
