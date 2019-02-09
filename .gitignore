@@ -107,3 +107,5 @@ homeassistant4tingbot\.tingapp/secrets\.json
 
 homeassistant4tingbot\.tingapp/settings\.json
 homeassistant4tingbot\.tingapp/local_settings\.json
+
+\.vscode/

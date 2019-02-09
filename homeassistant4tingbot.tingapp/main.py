@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
 import tingbot
-from tingbot import *
+from tingbot import (
+    app,
+    screen,
+    right_button,
+    midright_button,
+    midleft_button,
+    left_button,
+    touch,
+    every
+)
 from requests import get,post
 import json
     
 # setup code here
+icon_font = 'materialdesignicons-webfont.ttf'
 
 # Please: Create a copy of "default_settings.json" with the name of
 # "settings.json" (or "local_settings.json") containing user preferences
@@ -39,22 +49,28 @@ climate_operation_mode = ''
 
 
 # TODO: Add "api_get()" wrapper function
-# TODO: Add "api_post()" wrapper function
-
-def get_entity_states(entity_id):
-    url = base_url + 'states/' + entity_id
+def api_get(path):
+    url = base_url + path
     response = get(url, headers=headers)
     print("\n")
     print(response.text)
     print("\n")
     j = json.loads(response.text)
     return j
-    
-def post_service_action(service_domain, service_type, data):
-    url = base_url + 'services/' + service_domain + '/' + service_type
+
+# TODO: Add "api_post()" wrapper function
+def api_post(path, data):
+    url = base_url + path
     response = post(url, headers=headers, data=json.dumps(data))
     j = json.loads(response.text)
     return j
+
+def get_entity_states(entity_id):
+    return api_get('states/' + entity_id)
+    
+def post_service_action(service_domain, service_type, data):
+    path = 'services/' + service_domain + '/' + service_type
+    return api_post(path, data)
 
 def get_curr_temp(entity_id):
     j = get_entity_states(entity_id)
@@ -87,16 +103,22 @@ def increment_climate_temp(increment):
     
 
 @right_button.press
-@touch(xy=(300, 20), size=(64,64), align="topright")
+@touch(xy=(300, 20), size=(64,64), align='topright')
 def inc_climate_temp(xy=None, action=None):
-    if action == None or action == "up":
+    if action == None or action == 'up':
         increment_climate_temp(+temp_increment_by)
 
+        # Update UI straight away without waiting for next "every" call
+        loop2()
+
 @midright_button.press
-@touch(xy=(230, 20), size=(64,64), align="topright")
+@touch(xy=(230, 20), size=(64,64), align='topright')
 def dec_climate_temp(xy=None, action=None):
-    if action == None or action == "up":
+    if action == None or action == 'up':
         increment_climate_temp(-temp_increment_by)
+
+        # Update UI straight away without waiting for next "every" call
+        loop2()
 
 @left_button.hold
 def climate_turn_off():
@@ -104,11 +126,17 @@ def climate_turn_off():
     post_service_action('climate', 'turn_off', data)
     get_climate_states(climate_entity_id)
 
+    # Update UI straight away without waiting for next "every" call
+    loop2()
+
 @left_button.press
 def climate_turn_on():
     data = {'entity_id':climate_entity_id}
     post_service_action('climate', 'turn_on', data)
     get_climate_states(climate_entity_id)
+
+    # Update UI straight away without waiting for next "every" call
+    loop2()
     
     
 get_climate_states(climate_entity_id)
@@ -132,9 +160,9 @@ def loop2():
     # screen.text('Hello world!')
 
     # "plus-box-outline"
-    screen.text(u"\uF703", xy=(300, 20), align="topright", font_size=64, font='materialdesignicons-webfont.ttf')
+    screen.text(u'\uF703', xy=(300, 20), align='topright', font_size=64, font=icon_font)
     # "minus-box-outline"
-    screen.text(u"\uF6F1", xy=(230, 20), align="topright", font_size=64, font='materialdesignicons-webfont.ttf')
+    screen.text(u'\uF6F1', xy=(230, 20), align='topright', font_size=64, font=icon_font)
 
     
     screen.text(str(temp) + ' (' + str(climate_temp) + ' ; ' + climate_state + ')')
@@ -144,7 +172,7 @@ def loop2():
     else:
         color = color_active
         
-    screen.text(icon, xy=(20, 20),color=color, font='materialdesignicons-webfont.ttf')
+    screen.text(icon, xy=(20, 20),color=color, font=icon_font)
         
 
 state = {
