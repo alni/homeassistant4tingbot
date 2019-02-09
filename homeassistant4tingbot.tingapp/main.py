@@ -44,6 +44,7 @@ if 'climate_temp_increment_by' in user_prefs:
 climate_temp = 0.0
 climate_state = ''
 climate_operation_mode = ''
+climate_operation_list = []
 
 #response = get(url, headers=headers)
 #print(response.text)
@@ -96,12 +97,13 @@ def get_climate_temp(entity_id):
     
 def get_climate_states(entity_id):
     # Call the API to get a climate thermostat state information
-    global temp, climate_temp, climate_state, climate_operation_mode
+    global temp, climate_temp, climate_state, climate_operation_mode, climate_operation_list
     j = get_entity_states(entity_id)
     climate_temp = j['attributes']['temperature']
     if 'current_temperature' in j['attributes']:
         temp = j['attributes']['current_temperature']
     climate_operation_mode = j['attributes']['operation_mode']
+    climate_operation_list = j['attributes']['operation_list']
     climate_state = j['state']
     
 def increment_climate_temp(increment):
@@ -164,7 +166,7 @@ icon = u'\uF716' # snowflake (for cooling/AC)
 color_active = 'aqua' # active/on color (for cooling/AC)
 color_idle = 'gray' # inactive/idle/off color
 print(climate_operation_mode)
-if climate_operation_mode == 'heat':
+if 'heat' in climate_operation_list:
     icon = u'\uF238' # fire (for heating)
     color_active = 'orange' # active/on color (for heating)
 
@@ -184,9 +186,9 @@ def loop2():
     # "minus-box-outline" (Decrease the thermostat temperature)
     screen.text(u'\uF6F1', xy=(230, 20), align='topright', font_size=64, font=icon_font)
  
-    # Draw the info text in the center of the screen
-    # ("[current temp] ([thermostat wanted temp] ; [thermostat state])")
-    screen.text(str(temp) + ' (' + str(climate_temp) + ' ; ' + climate_state + ')')
+    # Draw the info text in the center of the screen in the format of:
+    # "[current temp] ([thermostat wanted temp] ; [thermostat state])"
+    screen.text('{0} ({1} ; {2})'.format(temp, climate_temp, climate_state))
 
     # Prepare the thermostat state icon
     color = 'gray' # Initialize color as gray
@@ -195,7 +197,7 @@ def loop2():
         # color)
         color = color_idle
     else:
-        # Otherwise set the icon as active
+        # Otherwise set the icon as active/on
         color = color_active
     
     # Draw the thermostat state icon
