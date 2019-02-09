@@ -21,7 +21,7 @@ Provides simple control of the Home Assistant server. (currently supports only c
 6. (Optional) Adjust the increment rate of the temperature as needed
 7. Copy the `secrets.example.json` and name it `secrets.json`
 8. Open Home Assistant in the web browser, log-in, edit the user
-9. And then create a new permanent Access Token, copy it and replace the sample token within the `secrets.json` file with this one
+9. And then create a new permanent Access Token, copy it and replace the sample token within the `secrets.json` file with that one
 10. Test it in the Tingbot Simulator within Tide before uploading/running on a real Tingbot/Raspberry Pi
 
 <!-- TODO: Provide Info on the button action mappings -->
