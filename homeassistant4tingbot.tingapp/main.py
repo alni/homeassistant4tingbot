@@ -14,7 +14,7 @@ from requests import get,post
 import json
     
 # setup code here
-icon_font = 'materialdesignicons-webfont.ttf'
+icon_font = 'MaterialDesign-Webfont/fonts/materialdesignicons-webfont.ttf'
 
 # Please: Create a copy of "default_settings.json" with the name of
 # "settings.json" (or "local_settings.json") containing user preferences
