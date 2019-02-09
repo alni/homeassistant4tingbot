@@ -1,11 +1,13 @@
 # Home Assistant 4 Tingbot #
 
-Provides simple control of the Home Assistant server. (currently supports only controlling a climate thermometer)
+Provides simple control of the Home Assistant server. (currently supports only controlling a climate thermostat)
+
+![Screenshot](screenshot.png)
 
 ## Features ##
 
-* Basic control of a single climate thermometer via the buttons and the touch screen (set temperature, turning on/off)
-* Customizing the app via `settings.json` (like entity id of the thermometer, increment rate of the temperature)
+* Basic control of a single climate thermostat via the buttons and the touch screen (set temperature, turning on/off)
+* Customizing the app via `settings.json` (like entity id of the thermostat, increment rate of the temperature)
 * Plain and simple UI with icons provided by the [Material Design Icons][material-design-icons] maintained by Austin Andrews ([@templarian][material-design-icons-maintainer])
   * (same icons used by the Home Assistant server software)
 
