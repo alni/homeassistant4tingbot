@@ -58,34 +58,33 @@ def get_climate_states(entity_id):
     
 def increment_climate_temp(increment):
     # Increment (+/-) the wanted temperature of the thermostat device
-    global climate_temp
     entity_id = climate_entity_id
     curr_climate_temp = ha_api.get_climate_temp(entity_id)
     curr_climate_temp += increment
     data = {'entity_id':entity_id, 'temperature': curr_climate_temp}
     ha_api.post_service_action('climate', 'set_temperature', data)
     get_climate_states(entity_id)
-    
+
+def act_increment_climate_temp(xy, action, temp_increment_by):
+    # Increment the wanted temperature of the thermostat device
+    if action == None or action == 'up':
+        increment_climate_temp(temp_increment_by)
+
+        # Update UI straight away without waiting for next "every" call
+        loop2()
 
 @right_button.press
 @touch(xy=button_inc_xy, size=button_touch_size, align=button_inc_align)
 def inc_climate_temp(xy=None, action=None):
     # Increase the wanted temperature of the thermostat device
-    if action == None or action == 'up':
-        increment_climate_temp(+config.temp_increment_by)
-
-        # Update UI straight away without waiting for next "every" call
-        loop2()
+    act_increment_climate_temp(xy, action, +config.temp_increment_by)
 
 @midright_button.press
 @touch(xy=button_dec_xy, size=button_touch_size, align=button_dec_align)
 def dec_climate_temp(xy=None, action=None):
     # Decrease the wanted temperature of the thermostat device
-    if action == None or action == 'up':
-        increment_climate_temp(-config.temp_increment_by)
+    act_increment_climate_temp(xy, action, -config.temp_increment_by)
 
-        # Update UI straight away without waiting for next "every" call
-        loop2()
 
 @left_button.hold
 def climate_turn_off():
@@ -120,7 +119,7 @@ if 'heat' in climate_operation_list:
     icon = climate_icon_heating # fire (for heating)
     color_active = 'orange' # active/on color (for heating)
 
-@every(seconds=30)
+@every(seconds=config.update_get_states_every_sec)
 def loop():
     get_climate_states(climate_entity_id)
     

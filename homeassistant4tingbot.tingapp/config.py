@@ -25,3 +25,7 @@ if 'climate_temp_increment_by' in user_prefs:
     # If a (optional) climate temperature increment rate is provided,
     # then use it instead of the default value
     temp_increment_by = user_prefs['climate_temp_increment_by']
+
+update_get_states_every_sec = 30 # Default get states update rate
+if 'update_get_states_every_sec' in user_prefs:
+    update_get_states_every_sec = user_prefs['update_get_states_every_sec']
